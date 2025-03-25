@@ -1,0 +1,1 @@
+<p {{ $attributes->merge(['class' => 'mt-1 text-red-500']) }} {{ $attributes }}>{{ $message }}</p>

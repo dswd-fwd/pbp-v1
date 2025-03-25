@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+@import "tailwindcss";
+@theme {
+  --font-inter: "Inter", sans-serif; 
+  --font-roboto: "Roboto", sans-serif; 
+  --max-width-8xl: 90rem;
+}
