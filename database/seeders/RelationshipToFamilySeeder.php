@@ -22,8 +22,12 @@ class RelationshipToFamilySeeder extends Seeder
             ['name' => 'Spouse'],
         );
         RelationshipToFamily::updateOrCreate(   
-            ['name' => 'Offspring'],
-            ['name' => 'Offspring'],
+            ['name' => 'Son'],
+            ['name' => 'Son'],
+        );
+        RelationshipToFamily::updateOrCreate(   
+            ['name' => 'Daughter'],
+            ['name' => 'Daughter'],
         );
         RelationshipToFamily::updateOrCreate(   
             ['name' => 'Parent'],

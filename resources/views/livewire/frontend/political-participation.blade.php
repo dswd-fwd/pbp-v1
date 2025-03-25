@@ -33,6 +33,11 @@ class extends Component {
     public $user_family_members;
     public $family_members = [];
 
+    public $birth_registered = '';
+    public $registered_voter = '';
+    public $voted_last_six_years = '';
+    public $has_internet_access = '';
+
     public function mount()
     {
         if (!auth()->check()) {
@@ -45,7 +50,13 @@ class extends Component {
         $this->confirmations = Confirmation::get();
         $this->user_family_members = $this->user->familyMembers()->get();
 
-        // Family Members
+        // User Political Participation
+        $this->birth_registered = $this->user->birth_registered ?: '';
+        $this->registered_voter = $this->user->registered_voter ?: '';
+        $this->voted_last_six_years = $this->user->voted_last_six_years ?: '';
+        $this->has_internet_access = $this->user->has_internet_access ?: '';
+
+        // Family Members Political Participation
         $this->family_members = $this->user->familyMembers()
             ->get()
             ->map(function ($member) {
@@ -62,6 +73,14 @@ class extends Component {
     public function submitAnswer()
     {
         $user = Auth::user();
+
+        $user->update([
+            'birth_registered' => $this->birth_registered ?: null,
+            'registered_voter' => $this->registered_voter ?: null,
+            'voted_last_six_years' => $this->voted_last_six_years ?: null,
+            'has_internet_access' => $this->has_internet_access ?: null,
+        ]);
+
 
         foreach ($this->family_members as $member) {
             FamilyProfile::find($member['id'])->update(
@@ -82,6 +101,52 @@ class extends Component {
     <x-frontend.header :message="'POLITICAL PARTICIPATION'"/>
 
     <form wire:submit="submitAnswer">
+        <div class="relative p-8 mt-8 space-y-6 border rounded-lg border-zinc-200">
+            <x-frontend.header-description class="!text-sky-600" :message="'Respondent'"/>
+            <div class="!mt-6 grid gap-6">
+                <div class="flex gap-2">
+                    <x-frontend.header-description :message="'Name:'"/>
+                    <p>{{ $user->name }}</p>
+                </div>
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div>
+                        <x-frontend.header-description :message="'Is birth registered with the civil registry office'"/>
+                        <x-form.select class="!mt-2" wire:model="birth_registered">
+                            @foreach ($confirmations as $confirmation)
+                                <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                            @endforeach
+                        </x-form.select>
+                    </div>
+                    <div>
+                        <x-frontend.header-description :message="'Is a registered voter'"/>
+                        <x-form.select class="!mt-2" wire:model="registered_voter">
+                            @foreach ($confirmations as $confirmation)
+                                <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                            @endforeach
+                        </x-form.select>
+                    </div>
+                </div>
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div>
+                        <x-frontend.header-description :message="'Voted in the last  six years for election'"/>
+                        <x-form.select class="!mt-2" wire:model="voted_last_six_years">
+                            @foreach ($confirmations as $confirmation)
+                                <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                            @endforeach
+                        </x-form.select>
+                    </div>
+                    <div>
+                        <x-frontend.header-description :message="'Has access to the internet'"/>
+                        <x-form.select class="!mt-2" wire:model="has_internet_access">
+                            @foreach ($confirmations as $confirmation)
+                                <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                            @endforeach
+                        </x-form.select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @foreach ($user_family_members as $index => $user_family_member)
             <div class="relative p-8 mt-8 space-y-6 border rounded-lg border-zinc-200">
                 <x-frontend.header-description class="!text-sky-600" :message="'Family Member ' . ($index + 1)"/>

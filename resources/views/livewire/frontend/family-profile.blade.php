@@ -55,6 +55,7 @@ class extends Component {
                         'occupation_other' => $member->occupation_other,
                         'occupation_class_id' => $member->occupation_class_id ?: '',
                         'disability_id' => $member->disability_id,
+                        'disability_other' => $member->disability_other,
                         'critical_illness_id' => $member->critical_illness_id,
                         'critical_illness_other' => $member->critical_illness_other,
                         'solo_parent_id' => $member->solo_parent,
@@ -97,6 +98,7 @@ class extends Component {
                 'occupation_other' => '',
                 'occupation_class_id' => '',
                 'disability_id' => '',
+                'disability_other' => '',
                 'critical_illness_id' => '',
                 'critical_illness_other' => '',
                 'solo_parent_id' => '',
@@ -167,6 +169,7 @@ class extends Component {
                         'occupation_other' => $member['occupation_other'],
                         'occupation_class_id' => !empty($member['occupation_class_id']) ? $member['occupation_class_id'] : null,
                         'disability_id' => !empty($member['disability_id']) ? $member['disability_id'] : null,
+                        'disability_other' => $member['disability_other'],
                         'critical_illness_id' => !empty($member['critical_illness_id']) ? $member['critical_illness_id'] : null,
                         'critical_illness_other' => $member['critical_illness_other'],
                         'solo_parent' => $member['solo_parent_id'],
@@ -355,46 +358,65 @@ class extends Component {
                         @endforeach
                     </x-form.select>
                 </div>
-                <div>
+                <div x-data="{ disabilityText: '' }" 
+                    x-init="
+                        if ($wire.family_members[{{ $index }}].disability_other) {
+                            disabilityText = 'Other';
+                        }
+                    ">
                     <x-frontend.header-description :message="'Disability/ Special Needs:'"/>
                     <x-form.required />
-                    <x-form.select class="!mt-2" wire:model="family_members.{{ $index }}.disability_id" required>
+                
+                    <x-form.select class="!mt-2" wire:model="family_members.{{ $index }}.disability_id" required
+                        @change="
+                            disabilityText = $event.target.selectedOptions[0].text;
+                            if (disabilityText !== 'Other') {
+                                $wire.set('family_members.{{ $index }}.disability_other', null);
+                            }
+                        ">
                         @foreach ($disabilities as $disability)
                             <option value="{{ $disability->id }}">{{ $disability->name }}</option>
                         @endforeach
                     </x-form.select>
+                
+                    <div x-show="disabilityText === 'Other' || $wire.family_members[{{ $index }}].disability_other" class="mt-2">
+                        <p class="text-sm text-red-500">Please specify the disability</p>
+                        <x-form.input class="!mt-2" 
+                            wire:model="family_members.{{ $index }}.disability_other" 
+                            x-bind:required="disabilityText === 'Other'"/>
+                    </div>
                 </div>
             </div>
         
             <div class="grid gap-6 md:grid-cols-2">
-            <div x-data="{ criticalIllnessText: '' }" 
-                x-init="
-                    if ($wire.family_members[{{ $index }}].critical_illness_other) {
-                        criticalIllnessText = 'Other';
-                    }
-                ">
-                <x-frontend.header-description :message="'Critical Illness:'"/>
-                <x-form.required />
-
-                <x-form.select class="!mt-2" wire:model="family_members.{{ $index }}.critical_illness_id" required
-                    @change="
-                        criticalIllnessText = $event.target.selectedOptions[0].text;
-                        if (criticalIllnessText !== 'Other') {
-                            $wire.set('family_members.{{ $index }}.critical_illness_other', null);
+                <div x-data="{ criticalIllnessText: '' }" 
+                    x-init="
+                        if ($wire.family_members[{{ $index }}].critical_illness_other) {
+                            criticalIllnessText = 'Other';
                         }
                     ">
-                    @foreach ($critical_illnesses as $critical_illness)
-                        <option value="{{ $critical_illness->id }}">{{ $critical_illness->name }}</option>
-                    @endforeach
-                </x-form.select>
+                    <x-frontend.header-description :message="'Critical Illness:'"/>
+                    <x-form.required />
 
-                <div x-show="criticalIllnessText === 'Other' || $wire.family_members[{{ $index }}].critical_illness_other" class="mt-2">
-                    <p class="text-sm text-red-500">Please specify the critical illness</p>
-                    <x-form.input class="!mt-2" 
-                        wire:model="family_members.{{ $index }}.critical_illness_other" 
-                        x-bind:required="criticalIllnessText === 'Other'"/>
+                    <x-form.select class="!mt-2" wire:model="family_members.{{ $index }}.critical_illness_id" required
+                        @change="
+                            criticalIllnessText = $event.target.selectedOptions[0].text;
+                            if (criticalIllnessText !== 'Other') {
+                                $wire.set('family_members.{{ $index }}.critical_illness_other', null);
+                            }
+                        ">
+                        @foreach ($critical_illnesses as $critical_illness)
+                            <option value="{{ $critical_illness->id }}">{{ $critical_illness->name }}</option>
+                        @endforeach
+                    </x-form.select>
+
+                    <div x-show="criticalIllnessText === 'Other' || $wire.family_members[{{ $index }}].critical_illness_other" class="mt-2">
+                        <p class="text-sm text-red-500">Please specify the critical illness</p>
+                        <x-form.input class="!mt-2" 
+                            wire:model="family_members.{{ $index }}.critical_illness_other" 
+                            x-bind:required="criticalIllnessText === 'Other'"/>
+                    </div>
                 </div>
-            </div>
 
                 <div>
                     <x-frontend.header-description :message="'Solo Parent:'"/>
@@ -409,7 +431,7 @@ class extends Component {
         </div>
         @endforeach
 
-        <div class="flex justify-end gap-4 mt-8">
+        <div class="flex justify-center gap-4 mt-8">
             <x-form.button class="max-w-60 !bg-sky-600" wire:click="addFamilyMember" type="button">
                 Add Family Member
             </x-form.button>

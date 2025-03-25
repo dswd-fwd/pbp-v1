@@ -432,7 +432,6 @@ class extends Component {
                                                 @endif
                                             @endif
                                             @if ($smwo)
-                                            <div>
                                                 <div class="">
                                                     <div class="grid gap-2">
                                                         <label class="flex items-center space-x-2" wire:key="option-{{ $index }}">
@@ -476,7 +475,6 @@ class extends Component {
                                                         @endif
                                                     </div>
                                                 </div>
-                                            </div>
                                             @endif
                                         @endforeach
                                     </div>
@@ -485,6 +483,9 @@ class extends Component {
                         @endif
                         {{-- Multiple --}}
                         @if($question->is_multiple)
+                            @php
+                                $is_question_14 = $question->question_text == "What family planning methods do you use? Check all that applies:"
+                            @endphp
                             <div>
                                 <span class="font-bold">{{ $question->question_text }}</span>
                                 <div class="mt-4">
@@ -507,16 +508,14 @@ class extends Component {
                                                         class="relative border-gray-300 rounded text-sky-600 focus:ring-sky-400"
                                                         wire:model.change="multiple_answers.{{ $question['id'] }}.{{ $option['id'] }}" 
                                                         wire:change="updateCheckboxSelection({{ $question->id }}, {{ $option['id'] }}, {{ $option['has_other'] }}, null)"
+                                                        :disabled="{{ $is_question_14 && !in_array(108, $answers) }}"
                                                     >
                                                     <span>{{ $option['option_text'] }}</span>
                                                 </label>
                                                 @if ($option['has_other'])
                                                     @if (isset($multiple_answers[$question->id][$option['id']]) && $multiple_answers[$question->id][$option['id']] == $option['id'])
-                                                        {{-- @dump($final_answers_checkbox, $question->id, $option['id']) --}}
                                                         <x-form.input 
                                                             wire:model.live.debounce.250ms="final_answers_checkbox.{{ $question->id }}.{{$option['id']}}.option_has_other_text" 
-                                                            {{-- wire:input="updateCheckboxSelection({{ $question->id }}, {{ $option['has_other'] }}, {{ $option['id'] }}, $event.target.value, 0, 0, 0, null)" --}}
-                                                            {{-- wire:input="updateCheckboxSelection({{ $question->id}}, {{ $option['id']}}, {{ $option['has_other'] }}, $event.target.value)" --}}
                                                             placeholder="Please specify"
                                                         />
                                                     @endif

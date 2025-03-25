@@ -57,5 +57,9 @@ class DisablitySeeder extends Seeder
             ['name' => 'Rare Disease'],
             ['name' => 'Rare Disease'],
         );
+        Disability::updateOrCreate(   
+            ['name' => 'Other'],
+            ['name' => 'Other'],
+        );
     }
 }

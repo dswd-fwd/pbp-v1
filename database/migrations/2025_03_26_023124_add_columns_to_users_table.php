@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('family_profiles', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->foreignId('code_skill_current_id')->nullable()->constrained('code_skills')->onDelete('cascade')->after('income_kind');
             $table->string('code_skill_current_other')->nullable()->after('code_skill_current_id');
             $table->foreignId('code_skill_acquire_id')->nullable()->constrained('code_skills')->onDelete('cascade')->after('code_skill_current_other');
@@ -27,8 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('family_profiles', function (Blueprint $table) {
-            // Drop foreign key constraints first
+        Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['code_skill_current_id']);
             $table->dropForeign(['code_skill_acquire_id']);
             $table->dropForeign(['reason_for_absence_id']);

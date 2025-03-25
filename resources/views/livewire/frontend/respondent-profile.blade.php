@@ -41,8 +41,8 @@ class extends Component {
     public $civil_status_id = '';
     public $religion_id = '';
     public $religion_other = '';
-    public $ip_id = '';
-    public $ip_other = '';
+    public $i_p_membership_id = '';
+    public $i_p_membership_other = '';
     public $hf_id = '';
     public $birth = '';
     public $sex = '';
@@ -52,6 +52,7 @@ class extends Component {
     public $occupation_other = '';
     public $occupation_class_id = '';
     public $disability_id = '';
+    public $disability_other = '';
     public $critical_illness_id = '';
     public $critical_illness_other = '';
 
@@ -75,8 +76,8 @@ class extends Component {
             $this->civil_status_id = $user->civil_status_id;
             $this->religion_id = $user->religion_id;
             $this->religion_other = $user->religion_other;
-            $this->ip_id = $user->i_p_membership_id;
-            $this->ip_other = $user->ip_other;
+            $this->i_p_membership_id = $user->i_p_membership_id;
+            $this->i_p_membership_other = $user->i_p_membership_other;
             $this->hf_id = $user->head_of_the_family;
             $this->birth = $user->birth;
             $this->sex = $user->sex;
@@ -86,6 +87,7 @@ class extends Component {
             $this->occupation_other = $user->occupation_other;
             $this->occupation_class_id = $user->occupation_class_id ?: '';
             $this->disability_id = $user->disability_id;
+            $this->disability_other = $user->disability_other;
             $this->critical_illness_id = $user->critical_illness_id;
             $this->critical_illness_other = $user->critical_illness_other;
         }
@@ -163,8 +165,8 @@ class extends Component {
             'civil_status_id' => (int) $this->civil_status_id,
             'religion_id' => (int) $this->religion_id,
             'religion_other' => $this->religion_other,
-            'i_p_membership_id' => (int) $this->ip_id,
-            'ip_other' => $this->ip_other,
+            'i_p_membership_id' => (int) $this->i_p_membership_id,
+            'i_p_membership_other' => $this->i_p_membership_other,
             'head_of_the_family' => (int) $this->hf_id,
             'birth' => $this->birth,
             'sex' => $this->sex,
@@ -174,6 +176,7 @@ class extends Component {
             'occupation_other' => $this->occupation_other,
             'occupation_class_id' => $this->occupation_class_id ? (int) $this->occupation_class_id : null,
             'disability_id' => (int) $this->disability_id,
+            'disability_other' => $this->disability_other,
             'critical_illness_id' => (int) $this->critical_illness_id,
             'critical_illness_other' => $this->critical_illness_other,
         ];
@@ -342,7 +345,7 @@ class extends Component {
             <div class="grid gap-6 md:grid-cols-3">
                 <div x-data="{ selectedIpClass: '' }"
                     x-init="
-                        if ($wire.ip_other) {
+                        if ($wire.i_p_membership_other) {
                             selectedIpClass = 'Other';
                         }
                     "
@@ -350,11 +353,11 @@ class extends Component {
                     <x-frontend.header-description :message="'IP Membership: '"/>
                     <x-form.required />
                 
-                    <x-form.select class="!mt-2" wire:model="ip_id"
+                    <x-form.select class="!mt-2" wire:model="i_p_membership_id"
                         @change="
                             selectedIpClass = $event.target.selectedOptions[0].text;
                             if (selectedIpClass !== 'Other') {
-                                $wire.set('ip_other', null); // Reset Livewire variable
+                                $wire.set('i_p_membership_other', null); // Reset Livewire variable
                             }
                         " required>
                         @foreach ($ip_memberships as $ip_membership)
@@ -362,9 +365,9 @@ class extends Component {
                         @endforeach
                     </x-form.select>
                 
-                    <div x-show="selectedIpClass === 'Other' || (@entangle('ip_other') && $wire.ip_other !== null && $wire.ip_other !== '')" class="mt-2">
+                    <div x-show="selectedIpClass === 'Other' || (@entangle('i_p_membership_other') && $wire.i_p_membership_other !== null && $wire.i_p_membership_other !== '')" class="mt-2">
                         <p class="text-sm text-red-500">Please specify your IP Classification</p>
-                        <x-form.input class="!mt-2" wire:model="ip_other" x-bind:required="selectedIpClass === 'Other'"/>
+                        <x-form.input class="!mt-2" wire:model="i_p_membership_other" x-bind:required="selectedIpClass === 'Other'"/>
                     </div>
                 </div>
                 
@@ -389,7 +392,7 @@ class extends Component {
                     <x-form.required />
                     <x-form.select class="!mt-2" wire:model="sex" required>
                         <option value="Male">Male</option>
-                        <option value="Female">female</option>
+                        <option value="Female">Female</option>
                     </x-form.select>
                 </div>
                 <div>
@@ -443,15 +446,34 @@ class extends Component {
                 </div>
             </div>
             <div class="grid gap-6 md:grid-cols-2">
-                <div>
+                <div x-data="{ disabilityText: '' }"
+                    x-init="
+                        if ($wire.disability_other) {
+                            disabilityText = 'Other';
+                        }
+                    "
+                >
                     <x-frontend.header-description :message="'Disability/ Special Needs: '"/>
                     <x-form.required />
-                    <x-form.select class="!mt-2" wire:model="disability_id" required>
+                
+                    <x-form.select class="!mt-2" wire:model="disability_id"
+                        @change="
+                            disabilityText = $event.target.selectedOptions[0].text;
+                            if (disabilityText !== 'Other') {
+                                $wire.set('disability_other', null); // Reset Livewire variable
+                            }
+                        " required>
                         @foreach ($disabilities as $disability)
                             <option value="{{ $disability->id }}">{{ $disability->name }}</option>
                         @endforeach
                     </x-form.select>
+                
+                    <div x-show="disabilityText === 'Other' || (@entangle('disability_other') && $wire.disability_other !== null && $wire.disability_other !== '')" class="mt-2">
+                        <p class="text-sm text-red-500">Please specify your disability</p>
+                        <x-form.input class="!mt-2" wire:model="disability_other" x-bind:required="disabilityText === 'Other'"/>
+                    </div>
                 </div>
+            
                 <div x-data="{ criticalIllnessText: '' }"
                     x-init="
                         if ($wire.critical_illness_other) {
@@ -491,4 +513,61 @@ class extends Component {
             <x-form.progress-indicator :start="1" :end="10" :current="1" />
         </div>
     </form>
+
+
+    <div 
+        x-data="{ fullscreenModal: false }"
+        x-init="
+            setTimeout(() => fullscreenModal = true, 100);
+            $watch('fullscreenModal', value => {
+                if (value) {
+                    document.body.classList.add('overflow-hidden');
+                } else {
+                    document.body.classList.remove('overflow-hidden');
+                }
+            });
+        "
+        @keydown.escape="fullscreenModal = false"
+    >
+        <template x-teleport="body">
+            <div 
+                x-show="fullscreenModal"
+                x-transition:enter="transition ease-out duration-700"
+                x-transition:enter-start="translate-y-full"
+                x-transition:enter-end="translate-y-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="translate-y-0"
+                x-transition:leave-end="translate-y-full"
+                class="flex fixed inset-0 z-[99] w-screen h-screen bg-white"
+            >
+                <button @click="fullscreenModal=false" class="absolute top-0 right-0 z-30 flex items-center justify-center px-3 py-2 mt-3 mr-3 space-x-1 text-xs font-medium uppercase border rounded-md border-neutral-200 lg:border-white/20 lg:bg-black/10 hover:lg:bg-black/30 text-neutral-600 lg:text-white hover:bg-neutral-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    <span>Close</span>
+                </button>
+                
+                <div class="relative flex flex-wrap items-center w-full h-full px-8">
+                    <div class="relative w-full max-w-md mx-auto lg:mb-0">
+                        <div class="relative">
+                            <img src={{ asset('img/PBP.png') }} alt="" class="mb-4 max-w-24">
+                            <div class="flex flex-col mb-6 space-y-2">
+                                <h1 class="text-2xl font-semibold tracking-tight">Terms and Conditions</h1>
+                                <p class="mb-8 text-base text-neutral-500">
+                                    By providing your consent, you agree to participate in the Pamilya sa Bagong Pilipinas Assessment, which aims to gather information about the services your family has accessed from government agencies. Your responses will help improve these services. All information provided will be kept strictly confidential, and personal details such as names and addresses will not be disclosed in any reports. Participation in this assessment is voluntary, and you may refuse to answer any question or stop at any time without any consequence. By clicking the consent button or signing below, you confirm that you understand the purpose of this assessment and agree to participate.
+                                </p>
+                                <x-form.button @click="fullscreenModal=false" >
+                                    I Agree
+                                </x-form.button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative top-0 bottom-0 right-0 flex-shrink-0 hidden w-1/3 overflow-hidden bg-cover lg:block">
+                    <div class="absolute inset-0 z-20 w-full h-full opacity-70 bg-gradient-to-t from-black"></div>
+                    <img src="{{ asset('img/asian-mother.webp') }}" class="z-10 object-cover w-full h-full" />
+                </div>
+            </div>
+        </template>
+    </div>
+
+
 </div>

@@ -34,6 +34,10 @@ class HEASeeder extends Seeder
             ['name' => 'High School Graduate'],
         );
         HEA::updateOrCreate(   
+            ['name' => 'Senior High School'],
+            ['name' => 'Senior High School'],
+        );
+        HEA::updateOrCreate(   
             ['name' => 'Vocational Course'],
             ['name' => 'Vocational Course'],
         );

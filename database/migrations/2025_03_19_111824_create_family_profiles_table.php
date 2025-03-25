@@ -29,13 +29,13 @@ return new class extends Migration
             $table->string('occupation_other')->nullable();
             $table->foreignId('occupation_class_id')->nullable()->constrained('occupation_classes');
             $table->foreignId('disability_id')->nullable()->constrained('disabilities');
+            $table->string('disability_other')->nullable();
             $table->foreignId('critical_illness_id')->nullable()->constrained('critical_illnesses');
             $table->string('critical_illness_other')->nullable();
             $table->boolean('solo_parent');
             $table->foreignId('h_e_a_id')->nullable()->constrained('h_e_a_s');
             $table->boolean('attending_school')->nullable();
             $table->string('year_level')->nullable();
-            $table->foreignId('reason_for_absence_id')->nullable()->constrained('reason_for_absences');
             $table->string('not_attending_school_reason')->nullable();
             $table->boolean('read_and_write')->nullable();
             $table->boolean('birth_registered')->nullable();

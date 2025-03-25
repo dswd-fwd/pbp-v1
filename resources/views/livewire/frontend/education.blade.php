@@ -26,13 +26,21 @@ class extends Component {
 
     public $current_option;
 
-    // User Related
+    // User Education Family 
     public $heas;
     public $reason_for_absences;
     public $confirmations;
     public $user_family_members;
     public $family_members = [];
-
+    
+    // User Education
+    public $h_e_a_id = '';
+    public $attending_school = '';
+    public $year_level = '';
+    public $reason_for_absence_id = '';
+    public $not_attending_school_reason = '';
+    public $read_and_write = '';
+    
     public function mount()
     {
         if (!auth()->check()) {
@@ -45,8 +53,16 @@ class extends Component {
         $this->confirmations = Confirmation::get();
         $this->user_family_members = $this->user->familyMembers()->get();
         $this->section = Section::with('questions.options.subOptions')->where('name', 'EDUCATION')->first();
+        
+        // User Education
+        $this->h_e_a_id = $this->user->h_e_a_id ?: '';
+        $this->attending_school = $this->user->attending_school ?: '';
+        $this->year_level = $this->user->year_level ?: '';
+        $this->reason_for_absence_id = $this->user->reason_for_absence_id ?: '';
+        $this->not_attending_school_reason = $this->user->not_attending_school_reason ?: '';
+        $this->read_and_write = $this->user->read_and_write ?: '';
 
-        // Family Members
+        // Family Members Education
         $this->family_members = $this->user->familyMembers()
             ->get()
             ->map(function ($member) {
@@ -184,6 +200,15 @@ class extends Component {
     public function submitAnswer()
     {
         $user = Auth::user();
+
+        $user->update([
+            'h_e_a_id' => $this->h_e_a_id ?: null,
+            'attending_school' => $this->attending_school ?: null,
+            'year_level' => $this->year_level ?: null,
+            'reason_for_absence_id' => $this->reason_for_absence_id ?: null,
+            'not_attending_school_reason' => $this->not_attending_school_reason ?: null,
+            'read_and_write' => $this->read_and_write ?: null,
+        ]);
 
         foreach ($this->family_members as $member) {
             FamilyProfile::find($member['id'])->update(
@@ -384,6 +409,76 @@ class extends Component {
 
 <div class="w-full max-w-4xl p-10 m-auto overflow-hidden bg-white border border-zinc-200 text-zinc-800 rounded-xl">
     <x-frontend.header :message="$section->name"/>
+        
+    <div class="relative p-8 mt-8 space-y-6 border rounded-lg border-zinc-200">
+        <x-frontend.header-description class="!text-sky-600" :message="'Respondent'"/>
+        <div class="!mt-6 grid gap-6">
+            <div class="flex gap-2">
+                <x-frontend.header-description :message="'Name:'"/>
+                <p>{{ $user->name }}</p>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2">
+                <div>
+                    <x-frontend.header-description :message="'What is the highest educational attainment?:'"/>
+                    <x-form.select class="!mt-2" wire:model="h_e_a_id" required>
+                        @foreach ($heas as $hea)
+                            <option value="{{ $hea->id }}">{{ $hea->name }}</option>
+                        @endforeach
+                    </x-form.select>
+                </div>
+                <div>
+                    <x-frontend.header-description :message="'Is currently attending school?:'"/>
+                    <x-form.select class="!mt-2" wire:model="attending_school" required>
+                        @foreach ($confirmations as $confirmation)
+                            <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                        @endforeach
+                    </x-form.select>
+                </div>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2">
+                <div>
+                    <x-frontend.header-description :message="'If yes, what grade or year?:'"/>
+                    <x-form.input class="!mt-2 w-full" wire:model="year_level"/>
+                </div>
+                <div x-data="{ reasonText: '' }"
+                    x-init="
+                        if ($wire.not_attending_school_reason) {
+                            reasonText = 'Other';
+                        }
+                    ">
+                    <x-frontend.header-description :message="'If no, why not attending school?'" />
+                    <x-form.select class="!mt-2" wire:model="reason_for_absence_id" required
+                        @change="
+                            reasonText = $event.target.selectedOptions[0].text;
+                            if (reasonText !== 'Other') {
+                                $wire.set('not_attending_school_reason', null);
+                            }
+                        ">
+                        @foreach ($reason_for_absences as $reason_for_absence)
+                            <option value="{{ $reason_for_absence->id }}">{{ $reason_for_absence->name }}</option>
+                        @endforeach
+                    </x-form.select>
+                
+                    <div x-show="reasonText === 'Other' || $wire.not_attending_school_reason" class="mt-2">
+                        <p class="text-sm text-red-500">Please specify the reason</p>
+                        <x-form.input class="!mt-2"
+                            wire:model="not_attending_school_reason"
+                            x-bind:required="reasonText === 'Other'"/>
+                    </div>
+                </div>
+            </div>
+            <div class="grid gap-6">
+                <div>
+                    <x-frontend.header-description :message="'Can read and write a simple message in any language or dialect?:'"/>
+                    <x-form.select class="!mt-2" wire:model="read_and_write" required>
+                        @foreach ($confirmations as $confirmation)
+                            <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                        @endforeach
+                    </x-form.select>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @foreach ($user_family_members as $index => $user_family_member)
         <div class="relative p-8 mt-8 space-y-6 border rounded-lg border-zinc-200">

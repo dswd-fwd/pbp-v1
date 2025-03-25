@@ -17,7 +17,7 @@ Volt::route('/q4/education', 'frontend.education')->name('education');
 Volt::route('/q5/political-participation', 'frontend.political-participation')->name('political-participation');
 Volt::route('/q6/social-relationship-and-engagement', 'frontend.social-relationship-and-engagement')->name('social-relationship-and-engagement');
 Volt::route('/q7/environmental-impacts', 'frontend.environmental-impacts')->name('environmental-impacts');
-Volt::route('/q8/economical-productivity', 'frontend.economical-productivity')->name('economical-productivity');
+Volt::route('/q8/economic-productivity', 'frontend.economical-productivity')->name('economical-productivity');
 
 // Admin
 Volt::route('admin-login', 'backend.login')->name('login');

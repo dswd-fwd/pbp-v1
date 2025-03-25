@@ -63,6 +63,19 @@ class extends Component {
     public $modalOpen = false;
     public $signature;
 
+    // Salaries and Wages
+    public $employment_last_six_months = '';
+    public $income_cash = '';
+    public $income_kind = '';
+
+    // Skills
+    public $code_skill_current_id = '';
+    public $code_skill_current_other = '';
+    public $code_skill_acquire_id = '';
+    public $code_skill_acquire_other = '';
+    public $remarks = '';
+    public $certified = '';
+
     public function mount()
     {
         if (!auth()->check()) {
@@ -72,11 +85,22 @@ class extends Component {
         $this->user = Auth::user();
         $this->heas = HEA::get();
         $this->interviewers = Interviewer::get();
-        $this->section = Section::with('questions.options.subOptions')->where('name', 'ECONOMICAL PRODUCTIVITY')->first();
+        $this->section = Section::with('questions.options.subOptions')->where('name', 'ECONOMIC PRODUCTIVITY')->first();
         $this->reason_for_absences = ReasonForAbsence::get();
         $this->code_skills = CodeSkill::get();
         $this->confirmations = Confirmation::get();
         $this->user_family_members = $this->user->familyMembers()->get();
+
+        // User Salary, wages, and skills
+        $this->employment_last_six_months = $this->user->employment_last_six_months ?: '';
+        $this->income_cash = $this->user->income_cash ?: '';
+        $this->income_kind = $this->user->income_kind ?: '';
+        $this->code_skill_current_id = $this->user->code_skill_current_id ?: '';
+        $this->code_skill_current_other = $this->user->code_skill_current_other ?: '';
+        $this->code_skill_acquire_id = $this->user->code_skill_acquire_id ?: '';
+        $this->code_skill_acquire_other = $this->user->code_skill_acquire_other ?: '';
+        $this->remarks = $this->user->remarks ?: '';
+        $this->certified = $this->user->certified ?: '';
 
         // Family Members
         $this->family_members = $this->user->familyMembers()
@@ -263,6 +287,18 @@ class extends Component {
     public function submitAnswer()
     {
         $user = Auth::user();
+
+        $user->update([
+            'employment_last_six_months' => $this->employment_last_six_months ?: null,
+            'income_cash' => $this->income_cash ?: null,
+            'income_kind' => $this->income_kind ?: null,
+            'code_skill_current_id' => $this->code_skill_current_id ?: null,
+            'code_skill_current_other' => $this->code_skill_current_other ?: null,
+            'code_skill_acquire_id' => $this->code_skill_acquire_id ?: null,
+            'code_skill_acquire_other' => $this->code_skill_acquire_other ?: null,
+            'remarks' => $this->remarks ?: null,
+            'certified' => $this->certified ?: null,
+        ]);
 
         foreach ($this->family_members as $member) {
             FamilyProfile::find($member['id'])->update(
@@ -521,6 +557,8 @@ class extends Component {
         $signature = str_replace('data:image/png;base64,', '', $this->signatureData);
         $signature = base64_decode($signature);
 
+        // dd($signature);
+
         // Save the file directly in public/
         file_put_contents($path, $signature);
     }
@@ -579,6 +617,22 @@ class extends Component {
                         </tr>
                     </thead>
                     <tbody>
+                        <tr class="border-b hover:bg-gray-100">
+                            <td class="p-4 min-w-56">{{ $user->name }}</td>
+                            <td class="p-4 min-w-36">
+                                <x-form.select class="" wire:model="employment_last_six_months">
+                                    @foreach ($confirmations as $confirmation)
+                                        <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                                    @endforeach
+                                </x-form.select>
+                            </td>
+                            <td class="p-4 min-w-36 max-w-36">
+                                <x-form.input class="w-full" type="number" step="0.01" wire:model="income_cash"/>
+                            </td>
+                            <td class="p-4 min-w-36 max-w-36">
+                                <x-form.input class="w-full" type="number" step="0.01" wire:model="income_kind"/>
+                            </td>
+                        </tr>
                         @foreach ($user_family_members as $index => $user_family_member)
                             <tr class="border-b hover:bg-gray-100">
                                 <td class="p-4 min-w-56">{{ $user_family_member->name }}</td>
@@ -590,10 +644,10 @@ class extends Component {
                                     </x-form.select>
                                 </td>
                                 <td class="p-4 min-w-36 max-w-36">
-                                    <x-form.input class="w-full" wire:model="family_members.{{ $index }}.income_cash"/>
+                                    <x-form.input class="w-full" type="number" step="0.01" wire:model="family_members.{{ $index }}.income_cash"/>
                                 </td>
                                 <td class="p-4 min-w-36 max-w-36">
-                                    <x-form.input class="w-full" wire:model="family_members.{{ $index }}.income_kind"/>
+                                    <x-form.input class="w-full" type="number" step="0.01" wire:model="family_members.{{ $index }}.income_kind"/>
                                 </td>
                             </tr>
                         @endforeach
@@ -945,6 +999,82 @@ class extends Component {
         <div>
             <div class="mt-8">
                 <p class="font-semibold text-zinc-900">4. Skills of Family Members</p>
+            </div>
+            <div class="relative p-8 mt-8 space-y-6 border rounded-lg border-zinc-200">
+                <div class="grid gap-6">
+                    <div class="flex gap-2">
+                        <x-frontend.header-description :message="'Name:'"/>
+                        <p>{{ $user->name }}</p>
+                    </div>
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <div x-data="{ currentSkillText: '' }" 
+                            x-init="
+                                if ($wire.code_skill_current_other) {
+                                    currentSkillText = 'Other';
+                                }
+                            ">
+                            <x-frontend.header-description :message="'Skills the Family Members Currently Have'"/>
+                            <x-form.select class="!mt-2" wire:model="code_skill_current_id"
+                                @change="
+                                    currentSkillText = $event.target.selectedOptions[0].text;
+                                    if (currentSkillText !== 'Other') {
+                                        $wire.set('code_skill_current_other', null);
+                                    }
+                                ">
+                                @foreach ($code_skills as $code_skill)
+                                    <option value="{{ $code_skill->id }}">{{ $code_skill->name }}</option>
+                                @endforeach
+                            </x-form.select>
+                        
+                            <div x-show="currentSkillText === 'Other' || $wire.code_skill_current_other" class="mt-2">
+                                <p class="text-sm text-red-500">Please specify the skill</p>
+                                <x-form.input class="!mt-2" 
+                                    wire:model="code_skill_current_other" 
+                                    x-bind:required="currentSkillText === 'Other'"/>
+                            </div>
+                        </div>
+                        <div>
+                            <x-frontend.header-description :message="'Certified (Yes/No)'"/>
+                            <x-form.select class="!mt-2" wire:model="certified">
+                                @foreach ($confirmations as $confirmation)
+                                    <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                                @endforeach
+                            </x-form.select>
+                        </div>
+                    </div>
+                    <div class="grid gap-6 md:grid-cols-1">
+                        <div x-data="{ desiredSkillText: '' }" 
+                            x-init="
+                                if ($wire.code_skill_acquire_other) {
+                                    desiredSkillText = 'Other';
+                                }
+                            ">
+                            <x-frontend.header-description :message="'Skills the Family Members are Willing to Acquire'"/>
+                            <x-form.select class="!mt-2" wire:model="code_skill_acquire_id"
+                                @change="
+                                    desiredSkillText = $event.target.selectedOptions[0].text;
+                                    if (desiredSkillText !== 'Other') {
+                                        $wire.set('code_skill_acquire_other', null);
+                                    }
+                                ">
+                                @foreach ($code_skills as $code_skill)
+                                    <option value="{{ $code_skill->id }}">{{ $code_skill->name }}</option>
+                                @endforeach
+                            </x-form.select>
+                        
+                            <div x-show="desiredSkillText === 'Other' || $wire.code_skill_acquire_other" class="mt-2">
+                                <p class="text-sm text-red-500">Please specify the skill</p>
+                                <x-form.input class="!mt-2" 
+                                    wire:model="code_skill_acquire_other" 
+                                    x-bind:required="desiredSkillText === 'Other'"/>
+                            </div>
+                        </div>
+                        <div>
+                            <x-frontend.header-description :message="'Remarks'"/>
+                            <x-form.input class="!mt-2" wire:model="remarks"/>
+                        </div>
+                    </div>
+                </div>
             </div>
             @foreach ($family_members_skills as $index => $family_member_skills)
                 <div class="relative p-8 mt-8 space-y-6 border rounded-lg border-zinc-200">

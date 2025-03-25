@@ -18,8 +18,8 @@ class CivilStatusSeeder extends Seeder
             ['name' => 'Single'],
         );
         CivilStatus::updateOrCreate(   
-            ['name' => 'Maried'],
-            ['name' => 'Maried'],
+            ['name' => 'Married'],
+            ['name' => 'Married'],
         );
         CivilStatus::updateOrCreate(   
             ['name' => 'Cohabitation (Live-in/Common-Law)'],
