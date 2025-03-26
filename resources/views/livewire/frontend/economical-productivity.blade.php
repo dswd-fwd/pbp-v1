@@ -701,10 +701,10 @@ class extends Component {
                                     </x-form.select>
                                 </td>
                                 <td class="p-4 min-w-36 max-w-36">
-                                    <x-form.input class="w-full" wire:model="entrepreneurial_answer.{{ $index }}.income_cash" />
+                                    <x-form.input class="w-full" type="number" step="0.01" wire:model="entrepreneurial_answer.{{ $index }}.income_cash" />
                                 </td>
                                 <td class="p-4 min-w-36 max-w-36">
-                                    <x-form.input class="w-full" wire:model="entrepreneurial_answer.{{ $index }}.income_kind" />
+                                    <x-form.input class="w-full" type="number" step="0.01" wire:model="entrepreneurial_answer.{{ $index }}.income_kind" />
                                 </td>
                             </tr>
                         @endforeach
@@ -756,7 +756,7 @@ class extends Component {
                                     </x-form.select>
                                 </td>
                                 <td class="p-4 min-w-36 max-w-36">
-                                    <x-form.input class="w-full" wire:model="other_sources_answer.{{ $index }}.income_cash" />
+                                    <x-form.input class="w-full" type="number" step="0.01" wire:model="other_sources_answer.{{ $index }}.income_cash" />
                                 </td>
                                 <td class="p-4 min-w-36 max-w-36">
                                     <x-form.input class="w-full" wire:model="other_sources_answer.{{ $index }}.income_kind" />

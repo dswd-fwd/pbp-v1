@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('source_category'); // This includes "Others, specify: {value}"
             $table->string('employment_last_six_months')->nullable(); // Yes/No
             $table->decimal('income_cash', 10, 2)->nullable();
-            $table->decimal('income_kind', 10, 2)->nullable();
+            $table->string('income_kind')->nullable();
             $table->string('other_specify')->nullable(); 
             $table->timestamps();
         });

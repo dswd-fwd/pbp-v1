@@ -545,14 +545,14 @@ class extends Component {
                     <span>Close</span>
                 </button>
                 
-                <div class="relative flex flex-wrap items-center w-full h-full px-8">
+                <div class="relative flex flex-wrap items-center w-full h-full px-8 overflow-auto">
                     <div class="relative w-full max-w-md mx-auto lg:mb-0">
                         <div class="relative">
                             <img src={{ asset('img/PBP.png') }} alt="" class="mb-4 max-w-24">
                             <div class="flex flex-col mb-6 space-y-2">
                                 <h1 class="text-2xl font-semibold tracking-tight">Terms and Conditions</h1>
                                 <p class="mb-8 text-base text-neutral-500">
-                                    By providing your consent, you agree to participate in the Pamilya sa Bagong Pilipinas Assessment, which aims to gather information about the services your family has accessed from government agencies. Your responses will help improve these services. All information provided will be kept strictly confidential, and personal details such as names and addresses will not be disclosed in any reports. Participation in this assessment is voluntary, and you may refuse to answer any question or stop at any time without any consequence. By clicking the consent button or signing below, you confirm that you understand the purpose of this assessment and agree to participate.
+                                    Sa pamamagitan ng pagbibigay ng inyong pahintulot, sumasang-ayon kayong lumahok sa Pamilya sa Bagong Pilipinas Assessment, na naglalayong mangalap ng impormasyon tungkol sa mga serbisyong na-access ng inyong pamilya mula sa mga ahensya ng gobyerno. Ang inyong mga sagot ay makakatulong sa pagpapabuti ng mga serbisyong ito. Ang lahat ng impormasyong ibibigay ay mananatiling mahigpit na kumpidensyal, at ang mga personal na detalye tulad ng pangalan at tirahan ay hindi isasama sa anumang ulat. Ang inyong pakikilahok sa pagtatasa na ito ay boluntaryo, at maaari kayong tumanggi na sagutin ang anumang tanong o itigil ang pagsagot anumang oras nang walang anumang magiging epekto. Sa pamamagitan ng pag-click sa pindutan ng pahintulot o pagpirma sa ibaba, pinatutunayan ninyo na inyong nauunawaan ang layunin ng pagtatasa na ito at sumasang-ayon kayong lumahok.
                                 </p>
                                 <x-form.button @click="fullscreenModal=false" >
                                     I Agree
