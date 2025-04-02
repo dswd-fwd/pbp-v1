@@ -153,12 +153,20 @@ class extends Component {
                         'first_name' => $member['first_name'],
                         'middle_name' => $member['middle_name'],
                         'last_name' => $member['last_name'],
-                        'name' => trim("{$member['first_name']} {$member['middle_name']} {$member['last_name']}" . 
+                        'name' => trim("{$member['first_name']} " . 
+                            (!empty($member['middle_name']) ? strtoupper(substr($member['middle_name'], 0, 1)) . '. ' : '') . // Middle initial with dot
+                            "{$member['last_name']}" . 
                             ($member['extension_id'] && ($ext = $this->extension_names->firstWhere('id', $member['extension_id'])?->name) && strtoupper($ext) !== 'N/A' 
                                 ? " {$ext}" 
                                 : ''
                             )
                         ),
+                        // 'name' => trim("{$member['first_name']} {$member['middle_name']} {$member['last_name']}" . 
+                        //     ($member['extension_id'] && ($ext = $this->extension_names->firstWhere('id', $member['extension_id'])?->name) && strtoupper($ext) !== 'N/A' 
+                        //         ? " {$ext}" 
+                        //         : ''
+                        //     )
+                        // ),
                         'extension_name_id' => !empty($member['extension_id']) ? $member['extension_id'] : null,
                         'sex' => $member['sex'],
                         'civil_status_id' => $member['civil_status_id'],
