@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-        <title>{{ $title ?? 'Page Title' }}</title>
+        <title>{{ $title ?? 'Pamilya sa Bagong Pilipinas | Family Profiling Tool' }}</title>
         <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>  
         @vite('resources/css/app.css')
     </head>
