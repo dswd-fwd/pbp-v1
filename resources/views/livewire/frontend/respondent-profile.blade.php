@@ -150,12 +150,20 @@ class extends Component {
             'first_name' => $this->first_name,
             'middle_name' => $this->middle_name,
             'last_name' => $this->last_name,
-            'name' => trim("{$this->first_name} {$this->middle_name} {$this->last_name}" . 
+            'name' => trim("{$this->first_name} " .
+                ($this->middle_name ? strtoupper(substr($this->middle_name, 0, 1)) . '.' : '') . 
+                " {$this->last_name}" . 
                 ($this->extension_id && ($ext = $this->extension_names->firstWhere('id', $this->extension_id)?->name) && strtoupper($ext) !== 'N/A' 
                     ? " {$ext}" 
                     : ''
                 )
             ),
+            // 'name' => trim("{$this->first_name} {$this->middle_name} {$this->last_name}" . 
+            //     ($this->extension_id && ($ext = $this->extension_names->firstWhere('id', $this->extension_id)?->name) && strtoupper($ext) !== 'N/A' 
+            //         ? " {$ext}" 
+            //         : ''
+            //     )
+            // ),
             'extension_name_id' => $this->extension_id ? (int) $this->extension_id : null,
             'refregion_id' => (int) $this->region_id,
             'refprovince_id' => (int) $this->province_id,
@@ -552,7 +560,7 @@ class extends Component {
                             <div class="flex flex-col mb-6 space-y-2">
                                 <h1 class="text-2xl font-semibold tracking-tight">Terms and Conditions</h1>
                                 <p class="mb-8 text-base text-neutral-500">
-                                    Sa pamamagitan ng pagbibigay ng inyong pahintulot, sumasang-ayon kayong lumahok sa Pamilya sa Bagong Pilipinas Assessment, na naglalayong mangalap ng impormasyon tungkol sa mga serbisyong na-access ng inyong pamilya mula sa mga ahensya ng gobyerno. Ang inyong mga sagot ay makakatulong sa pagpapabuti ng mga serbisyong ito. Ang lahat ng impormasyong ibibigay ay mananatiling mahigpit na kumpidensyal, at ang mga personal na detalye tulad ng pangalan at tirahan ay hindi isasama sa anumang ulat. Ang inyong pakikilahok sa pagtatasa na ito ay boluntaryo, at maaari kayong tumanggi na sagutin ang anumang tanong o itigil ang pagsagot anumang oras nang walang anumang magiging epekto. Sa pamamagitan ng pag-click sa pindutan ng pahintulot o pagpirma sa ibaba, pinatutunayan ninyo na inyong nauunawaan ang layunin ng pagtatasa na ito at sumasang-ayon kayong lumahok.
+                                    Sa pamamagitan ng pagbibigay ng inyong pahintulot, sumasang-ayon kayong lumahok sa Pamilya sa Bagong Pilipinas Assessment, na naglalayong mangalap ng impormasyon tungkol sa mga serbisyong na-access ng inyong pamilya mula sa mga ahensya ng gobyerno. Ang inyong mga sagot ay makakatulong sa pagpapabuti ng mga serbisyong ito. Ang lahat ng impormasyong ibibigay ay mananatiling confidential, at ang mga personal na detalye tulad ng pangalan at tirahan ay hindi isasama sa anumang ulat. Ang inyong pakikilahok sa pagsusuri na ito ay boluntaryo, at maaari kayong tumanggi na sagutin ang anumang tanong o itigil ang pagsagot anumang oras nang walang anumang magiging epekto. Sa pamamagitan ng pag-click sa pindutan ng pahintulot sa ibaba, pinatutunayan ninyo na inyong nauunawaan ang layunin ng pagsusuri na ito at sumasang-ayon kayong lumahok.
                                 </p>
                                 <x-form.button @click="fullscreenModal=false" >
                                     I Agree
