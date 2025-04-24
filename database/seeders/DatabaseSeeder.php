@@ -33,6 +33,20 @@ class DatabaseSeeder extends Seeder
         );
 
         Interviewer::updateOrCreate(
+            ['email' => "jbbarceta@dswd.gov.ph"],
+            [
+                'name' => "Jelie B Barceta",
+                'uuid' => 'j3bb22t1',
+            ]
+        );
+        Interviewer::updateOrCreate(
+            ['email' => "fbalcancia@dswd.gov.ph"],
+            [
+                'name' => "Fredelyn B Alcancia",
+                'uuid' => 'f3b3a65a',
+            ]
+        );
+        Interviewer::updateOrCreate(
             ['email' => "agjbolotaolo@dswd.gov.ph"],
             [
                 'name' => "Anne Grace Bolotaolo",
