@@ -57,4 +57,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(OtherSourceAnswer::class);
     }
+
+    public static function totalSubmission() {
+        return static::where('role', 'member')->count();
+    }
+
+    public static function submissionByRegion()
+    {
+        return static::selectRaw("
+                TRIM(BOTH ')' FROM SUBSTRING_INDEX(SUBSTRING_INDEX(refregion.regDesc, '(', -1), ')', 1)) AS region,
+                COUNT(users.id) AS total
+            ")
+            ->join('refregion', 'users.refregion_id', '=', 'refregion.id')
+            ->where('users.role', 'member')
+            ->groupBy('region')
+            ->orderBy('region')
+            ->get();
+    }
+    
+    public function region()
+    {
+        return $this->belongsTo(Region::class, 'refregion_id');
+    }
+
 }

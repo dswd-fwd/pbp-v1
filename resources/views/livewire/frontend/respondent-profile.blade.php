@@ -243,7 +243,7 @@ class extends Component {
         </div>
 
         <div class="p-8 mt-8 space-y-6 border rounded-lg border-zinc-200">
-            <div class="grid gap-6 xl:grid-cols-4">
+            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                 <div>
                     <x-frontend.header-description :message="'First Name: '"/>
                     <x-form.required />
@@ -395,26 +395,32 @@ class extends Component {
                 </div>
             </div>
             <div class="grid gap-6 md:grid-cols-3">
-                <div>
-                    <x-frontend.header-description :message="'Sex: '"/>
-                    <x-form.required />
+                <div class="flex flex-col">
+                    <div class="flex-1">
+                        <x-frontend.header-description :message="'Sex: '"/>
+                        <x-form.required />
+                    </div>
                     <x-form.select class="!mt-2" wire:model="sex" required>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </x-form.select>
                 </div>
-                <div>
-                    <x-frontend.header-description :message="'Highest Educational Attainment: '"/>
-                    <x-form.required />
+                <div class="flex flex-col">
+                    <div class="flex-1">
+                        <x-frontend.header-description :message="'Highest Educational Attainment: '"/>
+                        <x-form.required />
+                    </div>
                     <x-form.select class="!mt-2" wire:model="hea_id" required>
                         @foreach ($heas as $hea)
                             <option value="{{ $hea->id }}">{{ $hea->name }}</option>
                         @endforeach
                     </x-form.select>
                 </div>
-                <div>
-                    <x-frontend.header-description :message="'Number of Family Members: '"/>
-                    <x-form.required />
+                <div class="flex flex-col">
+                    <div class="flex-1">
+                        <x-frontend.header-description :message="'Number of Family Members: '"/>
+                        <x-form.required />
+                    </div>
                     <x-form.select class="!mt-2" wire:model="fm_id" required>
                         @foreach ($family_members as $family_member)
                             <option value="{{ $family_member->id }}">{{ $family_member->name }}</option>
@@ -548,7 +554,7 @@ class extends Component {
                 x-transition:leave-end="translate-y-full"
                 class="flex fixed inset-0 z-[99] w-screen h-screen bg-white"
             >
-                <button @click="fullscreenModal=false" class="absolute top-0 right-0 z-30 flex items-center justify-center px-3 py-2 mt-3 mr-3 space-x-1 text-xs font-medium uppercase border rounded-md border-neutral-200 lg:border-white/20 lg:bg-black/10 hover:lg:bg-black/30 text-neutral-600 lg:text-white hover:bg-neutral-100">
+                <button @click="fullscreenModal=false" class="absolute top-0 right-0 z-30 flex items-center justify-center px-3 py-2 mt-3 mr-3 space-x-1 text-xs font-medium uppercase border rounded-md cursor-pointer border-neutral-200 lg:border-white/20 lg:bg-black/10 hover:lg:bg-black/30 text-neutral-600 lg:text-white hover:bg-neutral-100">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     <span>Close</span>
                 </button>

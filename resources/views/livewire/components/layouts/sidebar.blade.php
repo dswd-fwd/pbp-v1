@@ -8,10 +8,10 @@ new class extends Component {
 
 <div class="relative">
     <div class="fixed py-8 overflow-y-auto bg-white h-dvh w-80">
-        <img src="{{ asset('img/dswd-building.jpg') }}" class="absolute top-0 object-cover w-full h-full -z-10 opacity-5" alt="">
+        {{-- <img src="{{ asset('img/dswd-building.jpg') }}" class="absolute top-0 object-cover w-full h-full -z-10 opacity-5" alt=""> --}}
         <div class="mb-8">
             <a wire:navigate href="{{ route('admin-dashboard') }}">
-                <img src="{{ asset('img/DSWD-Logo.png') }}" alt="DSWD Logo" class="mx-auto max-w-36">
+                <img src="{{ asset('img/PBP.png') }}" alt="PBP Logo" class="mx-auto max-w-36">
             </a>
         </div>
 

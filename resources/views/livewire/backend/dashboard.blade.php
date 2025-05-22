@@ -2,11 +2,28 @@
 
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use App\Models\User;
+use App\Models\FamilyProfile;
 
 new
 #[Layout('components.layouts.backend-app')]
 class extends Component {
-    //
+    public $total_submission;
+    public $total_family_members;
+    public $region_categories;
+    public $region_series;
+
+    public function mount()
+    {
+        $this->total_submission = User::totalSubmission() ?? 0;
+        $this->total_family_members = $this->total_submission + FamilyProfile::count();
+
+        $regionData = User::submissionByRegion();
+        $this->region_categories = $regionData->pluck('region')->map(fn($r) => trim($r))->toArray() ?? [];
+        $this->region_series = $regionData->pluck('total')->toArray() ?? [];
+        // dd($this->region_categories, $this->region_series);
+    }
+
 }; ?>
 
 <div>
@@ -27,60 +44,58 @@ class extends Component {
     <dl class="grid grid-cols-1 gap-5 sm:grid-cols-3">
         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow-sm sm:p-6">
             <dt class="text-sm font-medium text-gray-500 truncate">Total Submissions</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">187</dd>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{ $total_submission }}</dd>
         </div>
         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow-sm sm:p-6">
-            <dt class="text-sm font-medium text-gray-500 truncate">Registered</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">300</dd>
+            <dt class="text-sm font-medium text-gray-500 truncate">Total Family Members</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{ $total_family_members }}</dd>
         </div>
         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow-sm sm:p-6">
             <dt class="text-sm font-medium text-gray-500 truncate">Total Eligible for Creditation</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">150</dd>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Ongoing</dd>
         </div>
     </dl>
 
     <div 
-        x-data="
-            {
-                chart: null,
-                init() {
-                    // Check if ApexCharts is available
-                    if (typeof ApexCharts !== 'undefined') {
-                    
-                        // Destroy existing chart if it exists
-                        if (this.chart) {
-                            this.chart.destroy();
-                            this.chart = null;
-                        }
+        x-data="{
+            chart: null,
+            categories: @entangle('region_categories'),
+            seriesData: @entangle('region_series'),
+            init() {
+                if (typeof ApexCharts !== 'undefined') {
 
-                        // Chart options
-                        const options = {
-                            chart: {
-                                type: 'line',
-                                height: 350
-                            },
-                            series: [{
-                                name: 'Example Series',
-                                data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
-                            }],
-                            xaxis: {
-                                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
-                            },
-                            title: {
-                                text: 'Monthly Application Submissions',
-                            }
-                        };
-
-                        // Create and render the chart
-                        this.chart = new ApexCharts(this.$refs.chart, options);
-                        this.chart.render();
-                    } else {
-                        console.error('ApexCharts is not loaded correctly.');
+                    if (this.chart) {
+                        this.chart.destroy();
+                        this.chart = null;
                     }
+
+                    const options = {
+                        chart: {
+                            type: 'line',
+                            height: 350
+                        },
+                        series: [{
+                            name: 'Submissions',
+                            data: this.seriesData
+                        }],
+                        xaxis: {
+                            categories: this.categories
+                        },
+                        title: {
+                            text: 'Region Data Submissions',
+                        }
+                    };
+
+                    this.chart = new ApexCharts(this.$refs.chart, options);
+                    this.chart.render();
+                } else {
+                    console.error('ApexCharts is not loaded correctly.');
                 }
-            }" 
-            x-init="init()"
-        >
-        <div x-ref="chart" wire:ignore class="max-w-xl p-6 mt-4 bg-white rounded-lg shadow-sm"></div>
+            }
+        }"
+        x-init="init()"
+    >
+        <div x-ref="chart" wire:ignore class="w-full p-6 mt-4 bg-white rounded-lg shadow-sm"></div>
     </div>
+
 </div>

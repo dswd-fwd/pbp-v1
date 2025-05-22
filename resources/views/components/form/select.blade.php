@@ -1,7 +1,7 @@
 @props(['error' => false])
 
 <select 
-    {{ $attributes->merge(['class' => "text-neutral-600 w-full px-4 mt-1 border rounded-md h-11 appearance-none pr-10 disabled:bg-gray-100 " . ($error ? '!border-red-500' : 'border-zinc-300')]) }} 
+    {{ $attributes->merge(['class' => "bg-white text-neutral-600 w-full px-4 mt-1 border rounded-md h-11 appearance-none pr-10 disabled:bg-gray-100 " . ($error ? '!border-red-500' : 'border-zinc-300')]) }} 
     {{ $attributes }}
 >
     <option value="" disabled selected></option>

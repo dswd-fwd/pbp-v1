@@ -58,7 +58,7 @@ new class extends Component {
                 @endswitch
             </span>
         </div>
-        <button wire:click="logout" class="font-semibold cursor-pointer text-zinc-800 hover:opacity-70">
+        <button wire:click="logout" class="font-semibold cursor-pointer text-zinc-600 hover:text-zinc-800">
             Logout
         </button>
     </div>
