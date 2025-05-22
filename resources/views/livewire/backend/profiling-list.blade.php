@@ -1,5 +1,6 @@
 <?php
 
+use Livewire\Attributes\Url;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 use Livewire\Volt\Component;
@@ -45,7 +46,7 @@ class extends Component {
                 type="search" 
                 class="px-4 py-2 bg-white border rounded-md border-zinc-200" 
                 placeholder="Search..." 
-                wire:model.debounce.300ms="search"
+                wire:model.live.300ms="search"
             >
         </div>
 
