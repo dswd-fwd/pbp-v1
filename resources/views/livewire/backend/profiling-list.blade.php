@@ -97,34 +97,37 @@ class extends Component {
 
     {{-- Receipt Modal with Two Copies --}}
     @if ($showReceiptModal && $selectedUser)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="w-full max-w-6xl p-6 font-mono text-sm bg-white rounded-lg shadow-xl">
+    <div class="fixed inset-0 z-50 flex items-center justify-center" style="background-color: rgba(0,0,0,0.5);" wire:click="closeModal">
+        <div class="w-full max-w-6xl p-6 py-16 font-mono text-sm bg-white rounded-lg shadow-xl">
             <div class="grid grid-cols-2 gap-4">
                 {{-- DSWD Copy --}}
-                <div class="p-4 border border-gray-300 rounded-md">
-                    <div class="flex justify-between mb-2">
-                        <h2 class="text-base font-bold">DSWD COPY</h2>
-                        <button wire:click="closeModal">🟢</button>
+                <div class="relative px-4 py-8 border border-gray-300 rounded-md">
+                    <div class="absolute text-2xl transform -translate-x-1/2 -top-12 left-1/2">
+                        DSWD COPY
+                    </div>
+                    <div class="mb-4">
+                        <img src="{{ asset('img/treslogos.png') }}" class="w-full mx-auto max-w-62" alt="">
+                        <img src="{{ asset('img/revised_pbp_mobile.png') }}" class="w-full mx-auto my-4 max-w-80" alt="">
+                    </div>
+                    <div class="flex justify-center mb-2">
+                        <div class="font-bold text-center">TRANSACTION RECEIPT</div>
                     </div>
 
                     <hr class="mb-2 border-t border-gray-400">
 
-                    <p>Department: DSWD</p>
                     <p>Date Issued: {{ now()->format('F j, Y') }}</p>
 
                     <hr class="my-2 border-t border-gray-400">
 
                     <p><strong>Name:</strong> {{ $selectedUser->name }}</p>
-                    <p><strong>Birthday:</strong> {{ \Carbon\Carbon::parse($selectedUser->birth)->format('F j, Y') }}</p>
-                    <p><strong>Region:</strong> {{ $selectedUser->region->regDesc ?? 'N/A' }}</p>
-                    <p><strong>Profile Created:</strong> {{ \Carbon\Carbon::parse($selectedUser->created_at)->format('F j, Y') }}</p>
+                    <p><strong>Address:</strong> {{ $selectedUser->region->regDesc ?? 'N/A' }}</p>
 
                     <hr class="my-2 border-t border-gray-400 border-dashed">
 
                     <p class="mt-2">✅ This receipt verifies the profiling of the above individual under the member role category.</p>
 
                     <div class="flex justify-center mt-4">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=receipt-profile-{{ $selectedUser->id }}" alt="QR Code">
+                        <img class="h-48" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=receipt-profile-{{ $selectedUser->id }}" alt="QR Code">
                     </div>
 
                     <hr class="mt-4 border-t border-gray-400">
@@ -132,34 +135,34 @@ class extends Component {
                 </div>
 
                 {{-- Individual Copy --}}
-                <div class="p-4 border border-gray-300 rounded-md">
-                    <div class="flex justify-between mb-2">
-                        <h2 class="text-base font-bold">RECEIPT</h2>
-                        <button wire:click="closeModal">🟢</button>
+                <div class="relative px-4 py-8 border border-gray-300 rounded-md">
+                    <div class="mb-4">
+                        <img src="{{ asset('img/treslogos.png') }}" class="w-full mx-auto max-w-62" alt="">
+                        <img src="{{ asset('img/revised_pbp_mobile.png') }}" class="w-full mx-auto my-4 max-w-80" alt="">
+                    </div>
+                    <div class="flex justify-center mb-2">
+                        <div class="font-bold text-center">TRANSACTION RECEIPT</div>
                     </div>
 
                     <hr class="mb-2 border-t border-gray-400">
 
-                    <p>Department: DSWD</p>
                     <p>Date Issued: {{ now()->format('F j, Y') }}</p>
 
                     <hr class="my-2 border-t border-gray-400">
 
                     <p><strong>Name:</strong> {{ $selectedUser->name }}</p>
-                    <p><strong>Birthday:</strong> {{ \Carbon\Carbon::parse($selectedUser->birth)->format('F j, Y') }}</p>
-                    <p><strong>Region:</strong> {{ $selectedUser->region->regDesc ?? 'N/A' }}</p>
-                    <p><strong>Profile Created:</strong> {{ \Carbon\Carbon::parse($selectedUser->created_at)->format('F j, Y') }}</p>
+                    <p><strong>Address:</strong> {{ $selectedUser->region->regDesc ?? 'N/A' }}</p>
 
                     <hr class="my-2 border-t border-gray-400 border-dashed">
 
                     <p class="mt-2">✅ This receipt verifies the profiling of the above individual under the member role category.</p>
 
                     <div class="flex justify-center mt-4">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=receipt-profile-{{ $selectedUser->id }}" alt="QR Code">
+                        <img class="h-48" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=receipt-profile-{{ $selectedUser->id }}" alt="QR Code">
                     </div>
 
                     <hr class="mt-4 border-t border-gray-400">
-                    <p class="mt-2 text-xs text-center text-gray-500">This document was system-generated and does not require a signature.</p>
+                    <p class="mt-2 text-xs text-center text-gray-500">System-generated copy. No signature required.</p>
                 </div>
             </div>
         </div>
